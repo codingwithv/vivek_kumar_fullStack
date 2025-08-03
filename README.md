@@ -1,10 +1,12 @@
-🔐 Role-Based JWT Authentication API
-A simple Express.js-based REST API implementing JWT-based login and Role-Based Access Control (RBAC).
+# 🔐 Role-Based JWT Authentication API
 
-📁 Project Structure
-bash
-Copy
-Edit
+A simple Node.js + Express.js REST API that implements **JWT-based authentication** with **role-based access control (RBAC)** for `admin`, `seller`, and `buyer`.
+
+---
+
+## 📁 Project Structure
+
+```
 .
 ├── app.js
 ├── .env
@@ -20,145 +22,177 @@ Edit
 │   └── productController.js
 ├── models/
 │   └── productModel.js
-🚀 How to Run
-1. Clone the Repository
-bash
-Copy
-Edit
-git clone <your-repo-url>
-cd your-project-name
-2. Install Dependencies
-bash
-Copy
-Edit
+```
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/your-repo-name.git
+cd your-repo-name
+```
+
+### 2. Install Dependencies
+
+```bash
 npm install
-3. Set Environment Variables
-Create a .env file in the root directory:
+```
 
-ini
-Copy
-Edit
+### 3. Create `.env` File
+
+Create a `.env` file in the root directory:
+
+```
 JWT_SECRET=yourSecretKey
-Replace yourSecretKey with any secure string.
+```
 
-4. Run the Server
-bash
-Copy
-Edit
+> Replace `yourSecretKey` with any strong secret string.
+
+### 4. Start the Server
+
+```bash
 node app.js
 # or if using nodemon
 npm run dev
-The server will run at:
-📍 http://localhost:5000
+```
 
-🧪 Dummy Users
-Use these users to test the login:
+Server runs at:
+```
+http://localhost:5000
+```
 
-Role	Email	Password
-Admin	admin@example.com	admin123
-Seller	seller@example.com	seller123
-Buyer	buyer@example.com	buyer123
+---
 
-Passwords are hashed using bcryptjs.
+## 🧪 Dummy Users for Testing
 
-🔑 Authentication Flow
-Login to get JWT token
+```js
+// users.js
+const users = [
+  {
+    id: 1,
+    email: "admin@example.com",
+    password: "admin123", // hashed internally
+    role: "admin"
+  },
+  {
+    id: 2,
+    email: "seller@example.com",
+    password: "seller123",
+    role: "seller"
+  },
+  {
+    id: 3,
+    email: "buyer@example.com",
+    password: "buyer123",
+    role: "buyer"
+  }
+];
+```
 
-Send JWT token in Authorization header for protected routes
+> Passwords are hashed using bcryptjs
 
-🔄 API Endpoints
-✅ POST /login
-Authenticate user and get JWT.
+---
 
-Body:
+## 🔑 Authentication Flow
 
-json
-Copy
-Edit
+1. User logs in via `/login` and receives a JWT.
+2. JWT is passed in `Authorization: Bearer <token>` header for protected routes.
+
+---
+
+## 🔄 API Endpoints
+
+### ✅ `POST /login`
+
+Login with email and password.
+
+**Request Body:**
+```json
 {
   "email": "seller@example.com",
   "password": "seller123"
 }
-Response:
+```
 
-json
-Copy
-Edit
+**Response:**
+```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsIn..."
 }
-✅ GET /products
-Return products based on role:
+```
 
-Role	Products Returned
-Admin	All products
-Seller	Products created by that seller
-Buyer	Only products marked as isPublic: true
+---
 
-Headers:
+### ✅ `GET /products` (Protected)
 
-makefile
-Copy
-Edit
-Authorization: Bearer <your_token>
-✅ POST /products (admin & seller only)
-Add a new product.
+Return products based on user role.
 
-Headers:
+| Role   | Returned Products                       |
+|--------|------------------------------------------|
+| Admin  | All products                             |
+| Seller | Only products created by that seller     |
+| Buyer  | Only products marked `isPublic: true`    |
 
-makefile
-Copy
-Edit
-Authorization: Bearer <your_token>
-Body:
+**Headers:**
+```
+Authorization: Bearer <JWT Token>
+```
 
-json
-Copy
-Edit
+---
+
+### ✅ `POST /products` (Protected)
+
+Add a product (admin and seller only).
+
+**Headers:**
+```
+Authorization: Bearer <JWT Token>
+```
+
+**Request Body:**
+```json
 {
-  "name": "Product Name",
-  "price": 500,
+  "name": "Product A",
+  "price": 100,
   "isPublic": true
 }
-Response:
+```
 
-json
-Copy
-Edit
-{
-  "id": 4,
-  "name": "Product Name",
-  "price": 500,
-  "isPublic": true,
-  "createdBy": 2
-}
-🔐 Role Access Summary
-Route	Method	Access
-/login	POST	Public
-/products	GET	All roles
-/products	POST	Admin, Seller only
+---
 
-🧪 Testing in Postman
-POST to /login → Copy token from response
+## 🔐 Role Access Summary
 
-For all protected routes:
+| Endpoint         | Method | Role Access         |
+|------------------|--------|---------------------|
+| `/login`         | POST   | Public              |
+| `/products`      | GET    | All roles           |
+| `/products`      | POST   | Admin, Seller only  |
 
-Go to Authorization tab
+---
 
-Choose Bearer Token
+## 🧪 Testing with Postman
 
-Paste token
+1. Use `POST /login` to get your token.
+2. For protected endpoints:
+   - Go to the **Authorization** tab.
+   - Choose **Bearer Token**.
+   - Paste the token received from `/login`.
 
-📦 Technologies Used
-Node.js
+---
 
-Express.js
+## 🛠 Tech Stack
 
-JSON Web Token (jsonwebtoken)
+- Node.js
+- Express.js
+- JWT (`jsonwebtoken`)
+- Password Hashing with `bcryptjs`
+- Environment Config with `dotenv`
 
-Bcrypt (bcryptjs)
+---
 
-Dotenv
+## 📄 License
 
-📄 License
-This project is for educational and internship assessment purposes.
+This project is for educational and internship assessment purposes only.
